@@ -37,15 +37,60 @@ It builds the following ROM:
 
 **Discord:** <https://discord.zelda64.dev>
 
-## Installation
+## Cloning the project
+
+To build, you'll first need a local copy of the project.
+
+### On Windows
+
+If you haven't already, install [git](https://git-scm.com/download/win), then run then clone the repository in your preferred location:
+
+```bash
+git clone --config core.eol=lf --config core.autocrlf=input https://github.com/zeldaret/oot.git
+```
+
+The added configuration values ensure files will use LF line endings, which is required to build the project.
+
+### On macOS
+
+If you haven't already, install git, for example using homebrew:
+
+```bash
+brew update && brew install git
+```
+
+Clone the repository in your preferred location:
+
+```bash
+git clone https://github.com/zeldaret/oot.git
+```
+
+### On Linux
+
+If you haven't already, install git, for example on Ubuntu/Debian:
+
+```bash
+sudo apt-get update && sudo apt-get install git
+```
+
+Clone the repository in your preferred location:
+
+```bash
+git clone https://github.com/zeldaret/oot.git
+```
+
+## Building
+
+The first thing to consider is whether you want to build the project:
+
+- [Using Docker](#Docker), which provides an isolated environnement you can delete and re-create easily (no dependency installed on your system).
+- Directly on your system ([Windows](#Windows)/[macOS](#macos)/[Linux](#Linux)).
 
 ### Windows
 
-For Windows 10 or 11, install WSL and a distribution by following this
-[WSL Installation Guide](https://docs.microsoft.com/en-us/windows/wsl/install).
-We recommend using Debian or Ubuntu 20.04 Linux distributions.
+For Windows 10 and 11, you can simply install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install) and a distribution (Debian or Ubuntu 20.04 recommended), then follow the [Linux instructions](#Linux) in your WSL environnement.
 
-For older versions of Windows, install a Linux VM or refer to either [Cygwin](#Cygwin) or [Docker](#Docker) instructions.
+For older versions of Windows, you can either follow the [Cygwin instructions](#Cygwin) or install a Linux virtual machine and follow the [Linux instructions](#Linux).
 
 ### macOS
 
@@ -69,15 +114,14 @@ You'll also need to [build and install mips-linux-binutils](docs/BUILDING_BINUTI
 Going forward in this guide, please use `gmake` whenever you encounter a `make` command.
 The `make` that comes with macOS behaves differently than GNU make and is incompatible with this project.
 
-You should now be able to continue from [step 2](#2-clone-the-repository) of the Linux instructions.
+You should now be able to continue from step [2](#2-prepare-a-base-rom) of the Linux instructions.
 
-### Linux (Native or under WSL / VM)
+### Linux
 
 #### 1. Install build dependencies
 
 The build process has the following package requirements:
 
-* git
 * build-essential
 * binutils-mips-linux-gnu
 * python3
@@ -87,18 +131,10 @@ Under Debian / Ubuntu (which we recommend using), you can install them with the 
 
 ```bash
 sudo apt-get update
-sudo apt-get install git build-essential binutils-mips-linux-gnu python3 libpng-dev
+sudo apt-get install build-essential binutils-mips-linux-gnu python3 libpng-dev
 ```
 
-#### 2. Clone the repository
-
-Clone `https://github.com/zeldaret/oot.git` where you wish to have the project, with a command such as:
-
-```bash
-git clone https://github.com/zeldaret/oot.git
-```
-
-#### 3. Prepare a base ROM
+#### 2. Prepare a base ROM
 
 Copy over your copy of the Master Quest (Debug) ROM inside the root of this new project directory.
 Rename the file to "baserom_original.z64", "baserom_original.n64" or "baserom_original.v64", depending on the original extension.
@@ -149,33 +185,24 @@ Both of these have the disadvantage that the ordering of the terminal output is 
 
 If you want to use Cygwin, you will need to:
 
-* Download and install [Git Bash](https://git-scm.com/download/win).
 * Download and install [Cygwin](https://cygwin.com).
 * [Build and install mips-linux-binutils](docs/BUILDING_BINUTILS_CYGWIN.md).
 
 Once mips-linux-binutils is installed you will need to install the following packages using Cygwin's installer:
 
 * libiconv
-* dos2unix
 * python3
 * libpng-devel
 
-Then you can continue from step [step 2](#2-clone-the-repository) of the Linux instructions.
-
-Note that, before building anything, you will need to run the following commands to fix line endings:
-
-```bash
-dos2unix fixle.sh
-./fixle.sh
-```
+Then you can continue from step [2](#2-prepare-a-base-rom) of the Linux instructions.
 
 ### Docker
 
 #### 1. Setup requirements
 
-To use Docker, you'll need either Docker Desktop or Docker Toolbox installed and setup based on your system.
-
-You'll also need to prepare a local version of the project with a copied base ROM (see steps [2](#2-clone-the-repository) and [3](#3-prepare-a-base-rom) of the Linux instructions).
+- On **Windows 10/11**, install [WSL](https://docs.microsoft.com/en-us/windows/wsl/install) and install [Docker Desktop](https://docs.docker.com/desktop/windows/install/).
+- On **macOS**, install [Docker Desktop on Mac](https://docs.docker.com/desktop/mac/install/).
+- On **Linux**, install docker (steps vary depending on your distribution).
 
 #### 2. Create the Docker image
 
@@ -187,7 +214,7 @@ docker build . -t oot
 
 #### 3. Start the container
 
-To start the container, you can mount your local filesystem into the Docker container and run an interactive bash session.
+To start the container, you can mount your local filesystem into the Docker container and run an interactive bash session:
 
 ```bash
 docker run -it --rm --mount type=bind,source="$(pwd)",destination=/oot oot /bin/bash
@@ -195,7 +222,7 @@ docker run -it --rm --mount type=bind,source="$(pwd)",destination=/oot oot /bin/
 
 #### 4. Setup and Build the ROM
 
-Once inside the container, you can follow steps [4](#4-setup-the-rom-and-build-process) and [5](#5-build-the-rom) of the Linux instructions to setup and build the ROM, or run any other command you need.
+Once inside the container, you can follow the Linux instructions starting from step [2](#2-prepare-a-base-rom) to setup and build the ROM, or run any other command you need.
 
 ## Contributing
 
